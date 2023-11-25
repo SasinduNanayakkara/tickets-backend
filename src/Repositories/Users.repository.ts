@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { UsersDto } from "../Dtos/Users.dto";
 import UsersSchema from "../Schemas/Users.schema";
 
