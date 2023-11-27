@@ -1,5 +1,5 @@
 import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository } from "../Repositories/Event.repository";
-import { EventDto } from "../Dtos/Event.dto";
+import { EventDto, TicketPriceModel } from "../Dtos/Event.dto";
 
 export const createEventService = async (event: EventDto) => {
     try {
@@ -71,6 +71,37 @@ export const deleteEventService = async (id: string) => {
     try {
         const result = await deleteEventRepository(id);
         return result;
+    }
+    catch (error: any) {
+        console.error(`Error: ${error}`);
+        process.exit(1);
+    }
+}
+
+export const decreaseEventService = async (eventId: string, ticketPriceId: string, quantity: number) => {
+    try {
+        const event = await getEventByIdRepository(eventId);
+
+        if (!event) {
+            console.error("Event not found");
+        }
+
+        const ticketPrice = event?.ticketPrice.find((ticket: any) => 
+            ticket.id.toString() === ticketPriceId
+        );
+
+        if (!ticketPrice) {
+            console.error("Ticket price not found");
+        }
+
+        if ((ticketPrice?.ticketQuantity ?? 0) < quantity) {
+            console.error("Not enough tickets available");
+        }
+
+        let currentQuantity = ticketPrice?.ticketQuantity ?? 0;
+        currentQuantity -= quantity;
+        const newEvent = await event?.save();
+        return newEvent;
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
