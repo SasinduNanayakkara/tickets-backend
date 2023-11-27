@@ -1,4 +1,7 @@
 export interface PaymentDto {
+    paymentRef: string,
+    event: string,
+    user: string,
     amount: number,
-    key: string
+    quantity: number
 }
