@@ -1,5 +1,5 @@
 import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository } from "../Repositories/Event.repository";
-import { EventDto, TicketPriceModel } from "../Dtos/Event.dto";
+import { EventDto } from "../Dtos/Event.dto";
 
 export const createEventService = async (event: EventDto) => {
     try {
