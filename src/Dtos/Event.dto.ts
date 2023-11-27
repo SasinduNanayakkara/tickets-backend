@@ -9,7 +9,7 @@ export interface EventDto {
     category: string;
 }
 
-interface TicketPrice {
+export interface TicketPrice {
     ticketName: string;
     ticketPrice: number;
     ticketQuantity: number;
