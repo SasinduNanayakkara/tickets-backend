@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { connectDB } from './Database/database';
 import router from './Routes/index';
+import logger from "./Logger/index"
 
 
 const app = express();
@@ -19,6 +20,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/v1', router);
 
 const PORT = process.env.PORT || 5000;
+
+logger!.info("test info");
 
 app.listen(PORT, () => {
     console.log(`Tickets backend Server running at http://localhost:${PORT}`);
