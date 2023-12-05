@@ -1,9 +1,11 @@
-import { timeStamp } from "console";
 import {createLogger, format, transports} from "winston"
+
 
 const loggerFormat = format.printf(({level, message, timestamp}) => {
     return `${timestamp} [${level}] ${message};`
 });
+
+const currentDate = new Date().toISOString().split('T')[0];
 
 export const devLogger = () => {
     return createLogger({
@@ -15,7 +17,7 @@ export const devLogger = () => {
 
         transports: [
             new transports.Console(),
-            new transports.File({filename: `debug.log`})
+            // new transports.File({filename: `${currentDate}-debug.log`});
         ]
     })
 }

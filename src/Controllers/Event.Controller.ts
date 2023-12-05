@@ -2,11 +2,14 @@ import { Request, Response } from "express";
 import { createEventService, deleteEventService, getEventByEventNameService, getEventByIdService, getEventsService, updateEventService } from "../Services/Event.service";
 import { EventDto } from "../Dtos/Event.dto";
 import { makeResponse } from "../Utils/response";
+import logger from "../Logger";
 
 export const createEventController = async (req: Request, res: Response) => {
     try {
+        logger?.info("Event Controller request - ", req.body);
         const event: EventDto = req.body;
         const result = await createEventService(event);
+        logger?.info("Event Controller response - ", result);
         return makeResponse(res, 201, result, 'User created successfully');
     }
     catch (error: any) {
