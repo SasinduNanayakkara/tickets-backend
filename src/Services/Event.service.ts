@@ -1,5 +1,6 @@
 import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository } from "../Repositories/Event.repository";
 import { EventDto } from "../Dtos/Event.dto";
+import { validateEventDate } from "../Utils/validation";
 
 export const createEventService = async (event: EventDto) => {
     try {
@@ -15,7 +16,13 @@ export const createEventService = async (event: EventDto) => {
 export const getEventsService = async () => {
     try {
         const result = await getEventsRepository();
-        return result;
+        if (result) {
+            const validEvents = validateEventDate(result as EventDto[]);
+            return validEvents;
+        }
+        else {
+            return null;
+        }
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
@@ -37,7 +44,13 @@ export const getEventByIdService = async (id: string) => {
 export const getEventByEventNameService = async (eventName: string) => {
     try {
         const result = await getEventByEventNameRepository(eventName);
-        return result;
+        if (result) {
+            const validEvents = validateEventDate(result as EventDto[]);
+            return validEvents;
+        }
+        else {
+            return null;
+        }
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
@@ -48,7 +61,13 @@ export const getEventByEventNameService = async (eventName: string) => {
 export const getEventByEventTypeService = async (eventType: string) => {
     try {
         const result = await getEventByEventTypeRepository(eventType);
-        return result;
+        if (result) {
+            const validEvents = validateEventDate(result as EventDto[]);
+            return validEvents;
+        }
+        else {
+            return null;
+        }
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
