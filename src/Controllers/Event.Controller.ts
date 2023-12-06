@@ -1,20 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import createError from "http-errors"
 import { createEventService, deleteEventService, getEventByEventNameService, getEventByIdService, getEventsService, updateEventService } from "../Services/Event.service";
 import { EventDto } from "../Dtos/Event.dto";
 import { makeResponse } from "../Utils/response";
 import logger from "../Logger";
 
-export const createEventController = async (req: Request, res: Response) => {
+export const createEventController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         logger?.info("Event Controller request - ", req.body);
         const event: EventDto = req.body;
         const result = await createEventService(event);
+        if (!result) {
+            throw createError.BadRequest('Event not created');
+        }
         logger?.info("Event Controller response - ", result);
         return makeResponse(res, 201, result, 'User created successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        next(error);
     }
 }
 
