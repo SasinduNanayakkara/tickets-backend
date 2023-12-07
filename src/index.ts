@@ -5,7 +5,7 @@ import { connectDB } from './Database/database';
 import router from './Routes/index';
 import { errorHandler } from './Utils/response';
 import morganMiddleware from './Logger/MorganMiddleware';
-
+import { client } from './Database/redisDB';
 
 const app = express();
 app.use(cors());
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(morganMiddleware)
 
 connectDB();
+client.connect();
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Tickets service is up and running');
