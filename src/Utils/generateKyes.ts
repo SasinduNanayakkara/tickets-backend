@@ -1,6 +1,6 @@
-// const crypto = require('crypto');
+const crypto = require('crypto');
 
-// const accessTokenKey = crypto.randomBytes(32).toString('hex');
-// const refreshTokenKey = crypto.randomBytes(32).toString('hex');
+const accessTokenKey = crypto.randomBytes(32).toString('hex');
+const refreshTokenKey = crypto.randomBytes(32).toString('hex');
 
-// console.table({accessTokenKey, refreshTokenKey});
+console.table({accessTokenKey, refreshTokenKey});
