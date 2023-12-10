@@ -1,4 +1,6 @@
-import { UsersDto } from "../Dtos/Users.dto";
+import { UsersDto, tokenDto } from "../Dtos/Users.dto";
+import logger from "../Logger";
+import TokenSchema from "../Schemas/Token.Schema";
 import UsersSchema from "../Schemas/Users.schema";
 
 export const createUserRepository = async (user: UsersDto) => {
@@ -10,5 +12,29 @@ export const createUserRepository = async (user: UsersDto) => {
     catch (error: any) {
         console.error(`Error: ${error}`);
         process.exit(1);
+    }
+}
+
+export const loginRepository = async (email: string) => {
+    try {
+        const user = await UsersSchema.findOne({email: email});
+        return user;
+    }
+    catch (err) {
+        logger.error(err);
+    }
+}
+
+export const tokenSaveRepository = async (tokenData: tokenDto) => {
+    try {
+        const newToken = new TokenSchema(tokenData);
+        const result = await newToken.save();
+        if (result) {
+            logger.info("User Id saved successfully");
+        }
+        return result;
+    }
+    catch(err) {
+        logger.error(err);
     }
 }

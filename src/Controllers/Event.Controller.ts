@@ -24,6 +24,7 @@ export const createEventController = async (req: Request, res: Response, next: N
 export const getEventsController = async (req: Request, res: Response) => {
     try {
         const result = await getEventsService();
+        logger.info("Events data retrieving =======");
         return makeResponse(res, 200, result, 'Events retrieved successfully');
     }
     catch (error: any) {
