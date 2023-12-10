@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { UsersDto } from "../Dtos/Users.dto";
 import { createUserService } from "../Services/Users.service";
 import {makeResponse} from '../Utils/response';
+import logger from "../Logger";
+import createError from "http-errors";
 
 export const createUser = async (req: Request, res: Response) => {
     try {
@@ -10,7 +12,8 @@ export const createUser = async (req: Request, res: Response) => {
         return makeResponse(res, 201, result, 'User created successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error("user creation failed.");
+        createError.BadRequest("user creation failed.")
         process.exit(1);
     }
 }

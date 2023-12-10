@@ -10,6 +10,7 @@
 
 
 import winston from "winston";
+import util from 'util'
 
 const levels = {
     error: 0,
@@ -28,7 +29,7 @@ const level = () => {
 const format = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
     winston.format.printf(
-        (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+        (info) => `${info.timestamp} ${info.level}: ${info.message instanceof Object ? util.inspect(info.message) : info.message}`,
     ),
 )
 
@@ -38,7 +39,7 @@ const transports = [
         filename: 'logs/error/log',
         level: 'error'
     }),
-    new winston.transports.File({filename: 'logs/all.log'}),
+    new winston.transports.File({filename: 'logs.log'}),
 ];
 
 const logger = winston.createLogger({
