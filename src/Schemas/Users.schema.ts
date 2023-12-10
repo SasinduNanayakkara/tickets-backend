@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Address is required"],
         trim: true
+    },
+    password: {
+        type: String,
+        required: [true, "Password is required"],
     }
 
 }, { timestamps: true });

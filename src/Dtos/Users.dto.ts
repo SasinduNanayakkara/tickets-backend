@@ -5,4 +5,11 @@ export interface UsersDto {
     phone: string;
     NIC: string;
     address: string;
+    password: string
+}
+
+export interface tokenDto {
+    userId: string;
+    jti: string;
+    type: string
 }

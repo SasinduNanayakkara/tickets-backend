@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
 import jwt from "jsonwebtoken";
-import logger from "../Logger";
-import { resolve } from "path";
-import { rejects } from "assert";
+import logger from "../Logger"; 
 import { client } from "../Database/redisDB";
 
 
@@ -18,8 +16,7 @@ export const verifyAccessToken = (req:Request, res:Response, next: NextFunction)
         const accessToken = bearerToken[1];
         jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET|| "", (err: any, payload: any) => {
             if (err) {
-                const message = err.name === 'JsonWebTokenError' ? '' : err.message;
-                return  next(createError.Unauthorized(message));
+                return  next(createError.Unauthorized("Unauthorized"));
             }
             req.body.payload = payload;
             next();
@@ -35,13 +32,21 @@ export const verifyAccessToken = (req:Request, res:Response, next: NextFunction)
 export const verifyRefreshToken = async (refreshToken: string) => {
     try {
         return new Promise((resolve, reject) => {
-            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || "", (err: any, payload: any) => {
+            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || "", async (err: any, payload: any) => {
+                const userId = payload.aud;
                     if (err) {
                         createError.Unauthorized();
                     }
                     else {
-                        const userId = payload.aud;
-                        resolve(userId);
+                        try {
+                            const result = await client.GET(userId)
+                            if (result === refreshToken) return resolve(userId);
+                            reject(createError.Unauthorized());
+                        }
+                        catch(err) {
+                            createError.InternalServerError();
+                            logger.error(err);
+                        }
                     }
                 });
         })
