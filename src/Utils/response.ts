@@ -11,7 +11,8 @@ export function makeResponse(res: Response, status: number, data: any, message: 
     if (!data) {
         delete (responseData as any).data;
     }
-    logger.http(`response - ${data}` );
+    logger.info("response - ");
+    logger.http(data);
     return res.status(status).json(responseData);
 }
 
