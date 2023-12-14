@@ -11,6 +11,18 @@
 
 import winston from "winston";
 import util from 'util'
+import fs from 'fs';
+
+const createLogDirs = () => {
+    const logDirs = ['logs', 'logs/error'];
+    logDirs.forEach((dir) => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+    });
+};
+
+createLogDirs();
 
 const levels = {
     error: 0,
