@@ -22,7 +22,7 @@ const createLogDirs = () => {
     });
 };
 
-createLogDirs();
+// createLogDirs();
 
 const levels = {
     error: 0,
@@ -47,11 +47,11 @@ const format = winston.format.combine(
 
 const transports = [
     new winston.transports.Console(),
-    new winston.transports.File({
-        filename: 'logs/error/log',
-        level: 'error'
-    }),
-    new winston.transports.File({filename: 'logs.log'}),
+    // new winston.transports.File({
+    //     filename: 'logs/error/log',
+    //     level: 'error'
+    // }),
+    // new winston.transports.File({filename: 'logs.log'}),
 ];
 
 const logger = winston.createLogger({
