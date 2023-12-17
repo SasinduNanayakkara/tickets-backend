@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors"
-import { createEventService, deleteEventService, getEventByEventNameService, getEventByIdService, getEventsService, updateEventService } from "../Services/Event.service";
+import { createEventService, deleteEventService, getEventByEventNameService, getEventByEventTypeService, getEventByIdService, getEventsService, updateEventService } from "../Services/Event.service";
 import { EventDto } from "../Dtos/Event.dto";
 import { makeResponse } from "../Utils/response";
 import logger from "../Logger";
@@ -60,7 +60,7 @@ export const getEventByEventNameController = async (req: Request, res: Response)
 export const getEventByEventTypeController = async (req: Request, res: Response) => {
     try {
         const eventType = req.params.eventType;
-        const result = await getEventByEventNameService(eventType);
+        const result = await getEventByEventTypeService(eventType);
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
     catch (error: any) {
