@@ -18,7 +18,18 @@ export const getEventsService = async () => {
         const result = await getEventsRepository();
         if (result) {
             const validEvents = validateEventDate(result as EventDto[]);
-            return validEvents;
+            const musicalEvents = validEvents.filter((event) => event.eventType === 'Musical');
+            let filteredEvents: EventDto[] = [];
+            if (validEvents.some((event) => event.eventType === 'Drama' || event.eventType === 'Exhibition')) {
+                filteredEvents = [
+                    ...musicalEvents.slice(0, 5),
+                    ...validEvents.filter((event) => event.eventType != 'Musical').slice(0, 4),
+                ];
+            }
+            else {
+                filteredEvents = musicalEvents;
+            }
+            return filteredEvents;
         }
         else {
             return null;
