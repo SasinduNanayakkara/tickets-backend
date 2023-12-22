@@ -29,7 +29,6 @@ export const getEventsController = async (req: Request, res: Response) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -41,7 +40,6 @@ export const getEventByIdController = async (req: Request, res: Response) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -53,7 +51,6 @@ export const getEventByEventNameController = async (req: Request, res: Response)
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -65,7 +62,6 @@ export const getEventByEventTypeController = async (req: Request, res: Response)
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -78,7 +74,6 @@ export const updateEventController = async (req: Request, res: Response) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -90,6 +85,5 @@ export const deleteEventController = async (req: Request, res: Response) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }

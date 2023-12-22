@@ -36,6 +36,5 @@ export const createPayment = async (req: Request, res: Response) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }

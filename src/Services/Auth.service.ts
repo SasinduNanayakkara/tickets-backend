@@ -60,7 +60,6 @@ export const loginService = async (email: string, password: string) => {
             }
             else {
                 logger.error("password not matched");
-                process.exit(1);
             }
         }
         else {

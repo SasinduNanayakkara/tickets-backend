@@ -55,7 +55,6 @@ export const login = async (req: Request, res: Response) => {
     }
     catch(err) {
         logger.error(err);
-        process.exit(1);
     }
 }
 

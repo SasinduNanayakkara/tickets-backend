@@ -9,7 +9,6 @@ export const createEventRepository = async (event: EventDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -20,7 +19,6 @@ export const getEventsRepository = async () => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -31,7 +29,6 @@ export const getEventByIdRepository = async (id: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -43,7 +40,6 @@ export const getEventByEventNameRepository = async (eventName: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -54,7 +50,6 @@ export const getEventByEventTypeRepository = async (eventType: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -65,7 +60,6 @@ export const updateEventRepository = async (id: string, event: EventDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -76,6 +70,5 @@ export const deleteEventRepository = async (id: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
