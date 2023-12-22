@@ -11,7 +11,6 @@ export const createUserRepository = async (user: UsersDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -33,6 +32,18 @@ export const tokenSaveRepository = async (tokenData: tokenDto) => {
             logger.info("User Id saved successfully");
         }
         return result;
+    }
+    catch(err) {
+        logger.error(err);
+    }
+}
+
+export const getUserByIdRepository = async (id: string) => {
+    try {
+        const result = await UsersSchema.findById(id);
+        if (result) {
+            return result;
+        }
     }
     catch(err) {
         logger.error(err);
