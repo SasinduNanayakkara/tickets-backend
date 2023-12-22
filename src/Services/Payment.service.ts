@@ -28,7 +28,6 @@ export const getTicketPricesService = async (eventId: string, ticketPriceId: Str
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -42,6 +41,5 @@ export const createPaymentService = async (payment: PaymentDto, ticketPriceId: s
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }

@@ -9,6 +9,5 @@ export const createPaymentRepository = async (payment: PaymentDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }

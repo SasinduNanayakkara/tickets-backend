@@ -9,7 +9,6 @@ export const createEventService = async (event: EventDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -37,7 +36,6 @@ export const getEventsService = async () => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -48,7 +46,6 @@ export const getEventByIdService = async (id: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -65,7 +62,6 @@ export const getEventByEventNameService = async (eventName: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -82,7 +78,6 @@ export const getEventByEventTypeService = async (eventType: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -93,7 +88,6 @@ export const updateEventService = async (id: string, event: EventDto) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -104,7 +98,6 @@ export const deleteEventService = async (id: string) => {
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
 
@@ -135,6 +128,5 @@ export const decreaseEventService = async (eventId: string, ticketPriceId: strin
     }
     catch (error: any) {
         console.error(`Error: ${error}`);
-        process.exit(1);
     }
 }
