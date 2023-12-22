@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UsersDto } from "../Dtos/Users.dto";
-import { createUserService } from "../Services/Users.service";
+import { createUserService, getUserByUserIdService } from "../Services/Users.service";
 import {makeResponse} from '../Utils/response';
 import logger from "../Logger";
 import createError from "http-errors";
@@ -14,6 +14,20 @@ export const createUser = async (req: Request, res: Response) => {
     catch (error: any) {
         logger.error("user creation failed.");
         createError.BadRequest("user creation failed.")
-        process.exit(1);
+    }
+}
+
+export const getUserByUserId = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id
+        const user = await getUserByUserIdService(id);
+        if(user) {
+            user.password = '';
+            return makeResponse(res, 200, user, 'User fetched successfully');
+        }
+    }
+    catch(err) {
+        logger.error("User fetching unsuccessful");
+        createError.BadRequest("User fetch failed");
     }
 }
