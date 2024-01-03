@@ -20,6 +20,7 @@ export const generateAccessToken = async (req: Request, res: Response, next: Nex
         makeResponse(res, 200, result, "Access token generated successfully");
     }
     catch(error) {
+        createError.BadRequest("Access token generation failed");
         next(error);
     }
 }
@@ -42,6 +43,7 @@ export const generateRefreshToken = async (req: Request, res: Response, next: Ne
         makeResponse(res, 200, {accessToken: accessTokenValue, refreshToken: refreshTokenValue}, "Refresh token generated successfully");
     }
     catch(error) {
+        createError.BadRequest("refresh token generation failed");
         next(error);
     }
 }
@@ -49,12 +51,13 @@ export const generateRefreshToken = async (req: Request, res: Response, next: Ne
 export const login = async (req: Request, res: Response) => {
     try {
         const {email, password} = req.body;
-        logger.info(req.body);
+        logger.info("Auth controller request - " + req.body);
         const result = await loginService(email, password);
         makeResponse(res, 200, result, "User logged in successfully");
     }
     catch(err) {
         logger.error(err);
+        createError.BadRequest("User login failed");
     }
 }
 

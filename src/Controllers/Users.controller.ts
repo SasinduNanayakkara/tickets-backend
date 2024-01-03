@@ -9,7 +9,12 @@ export const createUser = async (req: Request, res: Response) => {
     try {
         const user: UsersDto = req.body;
         const result = await createUserService(user);
-        return makeResponse(res, 201, result, 'User created successfully');
+        if (result.status === 'success') {
+            return makeResponse(res, 201, result, 'User created successfully');
+        }
+        else {
+            return makeResponse(res, 400, result, 'User creation unsuccessful');
+        }
     }
     catch (error: any) {
         logger.error("user creation failed.");
