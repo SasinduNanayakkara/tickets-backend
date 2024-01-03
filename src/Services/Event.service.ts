@@ -1,14 +1,16 @@
 import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository } from "../Repositories/Event.repository";
 import { EventDto } from "../Dtos/Event.dto";
 import { validateEventDate } from "../Utils/validation";
+import logger from "../Logger";
 
 export const createEventService = async (event: EventDto) => {
     try {
         const result = await createEventRepository(event);
         return result;
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`createEventService error - ${error}`);
     }
 }
 
@@ -34,8 +36,9 @@ export const getEventsService = async () => {
             return null;
         }
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventsService error - ${error}`);
     }
 }
 
@@ -44,8 +47,9 @@ export const getEventByIdService = async (id: string) => {
         const result = await getEventByIdRepository(id);
         return result;
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventByIdService error - ${error}`);
     }
 }
 
@@ -60,8 +64,9 @@ export const getEventByEventNameService = async (eventName: string) => {
             return null;
         }
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventByEventNameService error - ${error}`);
     }
 }
 
@@ -76,8 +81,9 @@ export const getEventByEventTypeService = async (eventType: string) => {
             return null;
         }
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventByEventTypeService error - ${error}`);
     }
 }
 
@@ -86,8 +92,9 @@ export const updateEventService = async (id: string, event: EventDto) => {
         const result = await updateEventRepository(id, event);
         return result;
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`updateEventService error - ${error}`);
     }
 }
 
@@ -96,8 +103,9 @@ export const deleteEventService = async (id: string) => {
         const result = await deleteEventRepository(id);
         return result;
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`deleteEventService error - ${error}`);
     }
 }
 
@@ -106,7 +114,7 @@ export const decreaseEventService = async (eventId: string, ticketPriceId: strin
         const event = await getEventByIdRepository(eventId);
 
         if (!event) {
-            console.error("Event not found");
+            logger.error("Event not found");
         }
 
         const ticketPrice = event?.ticketPrice.find((ticket: any) => 
@@ -114,11 +122,11 @@ export const decreaseEventService = async (eventId: string, ticketPriceId: strin
         );
 
         if (!ticketPrice) {
-            console.error("Ticket price not found");
+            logger.error("Ticket price not found");
         }
 
         if ((ticketPrice?.ticketQuantity ?? 0) < quantity) {
-            console.error("Not enough tickets available");
+            logger.error("Not enough tickets available");
         }
 
         let currentQuantity = ticketPrice?.ticketQuantity ?? 0;
@@ -126,7 +134,8 @@ export const decreaseEventService = async (eventId: string, ticketPriceId: strin
         const newEvent = await event?.save();
         return newEvent;
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`decreaseEventService error - ${error}`);
     }
 }

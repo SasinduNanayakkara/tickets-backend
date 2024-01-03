@@ -7,10 +7,11 @@ export const createUserRepository = async (user: UsersDto) => {
     try {
         const newUser = new UsersSchema(user);
         const result = await newUser.save();
-        return result;
+        return {result, status: 'success'};
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        return {error, status: 'error'};
     }
 }
 
@@ -21,6 +22,7 @@ export const loginRepository = async (email: string) => {
     }
     catch (err) {
         logger.error(err);
+        throw new Error(`login repository error - ${err}`);
     }
 }
 
@@ -31,10 +33,11 @@ export const tokenSaveRepository = async (tokenData: tokenDto) => {
         if (result) {
             logger.info("User Id saved successfully");
         }
-        return result;
+        return {result, status: 'success'};
     }
     catch(err) {
         logger.error(err);
+        return {err, status: 'error'}
     }
 }
 
@@ -42,10 +45,11 @@ export const getUserByIdRepository = async (id: string) => {
     try {
         const result = await UsersSchema.findById(id);
         if (result) {
-            return result;
+            return {result, status: 'success'};
         }
     }
     catch(err) {
         logger.error(err);
+        return {err, status: 'error'}
     }
 }

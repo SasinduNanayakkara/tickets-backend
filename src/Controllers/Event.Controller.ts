@@ -17,7 +17,7 @@ export const createEventController = async (req: Request, res: Response, next: N
         return makeResponse(res, 201, result, 'User created successfully');
     }
     catch (error) {
-        next(error);
+        createError.BadRequest("Event creation failed");
     }
 }
 
@@ -28,7 +28,8 @@ export const getEventsController = async (req: Request, res: Response) => {
         return makeResponse(res, 200, result, 'Events retrieved successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -39,7 +40,8 @@ export const getEventByIdController = async (req: Request, res: Response) => {
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -50,7 +52,8 @@ export const getEventByEventNameController = async (req: Request, res: Response)
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -61,7 +64,8 @@ export const getEventByEventTypeController = async (req: Request, res: Response)
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -73,7 +77,8 @@ export const updateEventController = async (req: Request, res: Response) => {
         return makeResponse(res, 200, result, 'Event updated successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event updating failed");
     }
 }
 
@@ -84,6 +89,8 @@ export const deleteEventController = async (req: Request, res: Response) => {
         return makeResponse(res, 200, result, 'Event deleted successfully');
     }
     catch (error: any) {
-        console.error(`Error: ${error}`);
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event deleting failed");
+
     }
 }

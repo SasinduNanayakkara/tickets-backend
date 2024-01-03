@@ -9,10 +9,12 @@ export const createUserService = async (user: UsersDto) => {
         const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);        
         user.password = hashedPassword;
         const result = await createUserRepository(user);
+        logger.info(`createUserService result - ${result}`);
         return result;
     }
     catch (error) {
-        logger.error(error)
+        logger.error("create user service - ",error);
+        return {error, status: 'error'};
     }
 }
 
