@@ -24,8 +24,12 @@ export const getUserByUserIdService = async (id: string) => {
         if (result) {
             return result;
         }
+        else {
+            return null;
+        }
     }
     catch(err) {
         logger.error(err);
+        return err;
     }
 }
