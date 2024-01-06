@@ -1,36 +1,46 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { createPaymentService, getTicketPricesService } from '../Services/Payment.service';
+import { createPaymentService } from '../Services/Payment.service';
 import { PaymentDto } from '../Dtos/Payment.dto';
 import { makeResponse } from '../Utils/response';
+import { getEventByIdService } from '../Services/Event.service';
 
-const stripe = new Stripe(process.env.STRIPE_KEY as string, {
+// const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
+const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
+const stripeInstance = new Stripe(stripe_key, {
     apiVersion: '2023-10-16',
     typescript: true
 });
 
-export const createPayment = async (req: Request, res: Response) => {
+export const createPaymentController = async (req: Request, res: Response) => {
     try {
-        const {eventId,ticketPriceId, quantity, userId} = req.body;
+        const paymentReq:PaymentDto = req.body;
+        console.log(req.body);
+        console.log(process.env.STRIPE_SECRET_KEY);
         
-        const ticketDetails = await getTicketPricesService(eventId,ticketPriceId, quantity); 
-        const session = await stripe.checkout.sessions.create({
-            mode: "payment",
-            success_url: `${process.env.CLIENT_URL}?success=true`,
-            cancel_url: `${process.env.CLIENT_URL}?success=false`,
-            line_items: [ticketDetails],
-            payment_method_types: ["card"]
+        
+        const eventDetails = await getEventByIdService(paymentReq.eventId); 
+        const session = await stripeInstance.checkout.sessions.create({  
+            line_items:[{
+                quantity: paymentReq.quantity,
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: eventDetails?.eventName as string,
+                        description: eventDetails?.eventType as string,
+                    },
+                    unit_amount: paymentReq.ticketPrice * 100
+                }
+            }],
+            mode: 'payment',
+            success_url: `https://www.youtube.com/`,
+            cancel_url: `https://www.linkedin.com/`
         });
+
         if (session) {
-            const newPayment: PaymentDto = {
-                paymentRef: session.id,
-                event: eventId,
-                user: userId,
-                amount: ticketDetails.price_data.unit_amount,
-                quantity: quantity
-            }
-            const result = await createPaymentService(newPayment, ticketPriceId);
-            return makeResponse(res, 201, result, 'Payment saved successfully');
+            console.log('session ', session);            
+            // return session?.url;
+            return makeResponse(res, 200, session?.url, 'Payment saved successfully');
         }
         
     }

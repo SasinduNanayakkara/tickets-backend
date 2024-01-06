@@ -1,7 +1,6 @@
 export interface PaymentDto {
-    paymentRef: string,
-    event: string,
-    user: string,
-    amount: number,
-    quantity: number
+    eventId: string;
+    ticketPrice: number;
+    quantity: number;
+    userId: string;
 }
