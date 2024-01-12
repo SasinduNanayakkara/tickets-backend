@@ -11,3 +11,13 @@ export const createPaymentRepository = async (payment: PaymentDto) => {
         console.error(`Error: ${error}`);
     }
 }
+
+export const getPaymentById = async (id: string) => {
+    try {
+        const result = await PaymentSchema.findById(id);
+        return result;
+    }
+    catch(error) {
+        console.error(`Error: ${error}`);
+    }
+}
