@@ -6,4 +6,6 @@ export interface TicketDto {
     quantity: number;
     userId: string;
     ticketRef: string;
+    location: string;
+    paymentId: string;
 }

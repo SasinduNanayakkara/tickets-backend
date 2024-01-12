@@ -27,9 +27,19 @@ const TicketSchema = new mongoose.Schema({
         ref: "Users",
         required: true
     },
-    paymentRef: {
+    paymentId: {
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "Payment",
+        required: true
+    },
+    location: {
         type: String,
         required: true
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'unpaid'],
+        default: 'unpaid'
     }
 }, { timestamps: true });
 
