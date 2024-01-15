@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import createHttpError from "http-errors";
-import { TicketDto } from "../Dtos/Ticket.dto";
-import { createTicketService, getTicketDetailsByIdService } from "../Services/Ticket.service";
+import { PdfTicketDto, TicketDto } from "../Dtos/Ticket.dto";
+import { createDigitalTicketService, createTicketService, getTicketDetailsByIdService } from "../Services/Ticket.service";
 import logger from "../Logger";
 import { makeResponse } from "../Utils/response";
+import QR from "qr-image"
 
 
 export const getTicketDetailsByIdController = async (req:Request, res:Response) => {
@@ -19,5 +20,27 @@ export const getTicketDetailsByIdController = async (req:Request, res:Response) 
     }
     catch(error) {
         createHttpError.BadRequest("Ticket creation failed");
+    }
+}
+
+export const createDigitalTicketController = async (req:Request, res:Response) => {
+    try {
+        const ticketDetails:PdfTicketDto = req.body;
+        console.log("pdf request - ", ticketDetails);
+        
+        const stream = res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'content-disposition': 'attachment;filename=Digital-Ticket.pdf'
+        });
+        const imageResponse = await fetch(ticketDetails.eventImage);
+        const image = await imageResponse.arrayBuffer();
+        const QRImage = QR.imageSync(ticketDetails.paymentRef, 'M');
+          
+        const doc = await createDigitalTicketService(ticketDetails, (chunk:any) => stream.write(chunk), () => stream.end(), image, QRImage);
+        console.log("pdf - ", doc);
+        
+    }
+    catch(error) {
+        createHttpError.BadRequest("Digital Ticket creation failed");
     }
 }
