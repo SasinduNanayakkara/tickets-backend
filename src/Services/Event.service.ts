@@ -1,4 +1,4 @@
-import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository } from "../Repositories/Event.repository";
+import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository, updateEventTicketQuantityRepository } from "../Repositories/Event.repository";
 import { EventDto } from "../Dtos/Event.dto";
 import { validateEventDate } from "../Utils/validation";
 import logger from "../Logger";
@@ -109,7 +109,7 @@ export const deleteEventService = async (id: string) => {
     }
 }
 
-export const decreaseEventService = async (eventId: string, ticketPriceId: string, quantity: number) => {
+export const decreaseEventService = async (eventId: string, eventTicketPrice: number, quantity: number) => {
     try {
         const event = await getEventByIdRepository(eventId);
 
@@ -117,22 +117,27 @@ export const decreaseEventService = async (eventId: string, ticketPriceId: strin
             logger.error("Event not found");
         }
 
-        const ticketPrice = event?.ticketPrice.find((ticket: any) => 
-            ticket.id.toString() === ticketPriceId
-        );
+        const ticket:any = event?.ticketPrice.find((ticket: any) =>{
+            if(ticket.ticketPrice === eventTicketPrice) {
+                return ticket;
+            }
+        });
+        console.log("$$$ticketPrice - ", ticket);
+        
 
-        if (!ticketPrice) {
+        if (!ticket) {
             logger.error("Ticket price not found");
+            throw new Error("Ticket price not found");
         }
 
-        if ((ticketPrice?.ticketQuantity ?? 0) < quantity) {
+        if ((ticket?.ticketQuantity ?? 0) < quantity) {
             logger.error("Not enough tickets available");
         }
 
-        let currentQuantity = ticketPrice?.ticketQuantity ?? 0;
+        let currentQuantity = ticket?.ticketQuantity ?? 0;
         currentQuantity -= quantity;
-        const newEvent = await event?.save();
-        return newEvent;
+        const result = await updateEventTicketQuantityRepository(eventId, ticket?._id as string, currentQuantity);
+        return result;
     }
     catch (error) {
         logger.error(`Error: ${error}`);

@@ -25,7 +25,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const getUserByUserId = async (req: Request, res: Response) => {
     try {
         const id = req.params.id
-        const user = await getUserByUserIdService(id);
+        const user:any = await getUserByUserIdService(id);
         if(user) {
             user.password = '';
             return makeResponse(res, 200, user, 'User fetched successfully');

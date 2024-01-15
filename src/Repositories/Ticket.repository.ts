@@ -13,3 +13,25 @@ export const ticketCreateRepository = async (ticket:TicketDto) => {
         throw new Error(`Create Event Repository error - ${error}`);
     }
 }
+
+export const updateTicketStatusRepository = async (ticketId: string, ticketStatus: string) => {
+    try {
+        const result = await TicketSchema.findByIdAndUpdate(ticketId, {paymentStatus: ticketStatus});
+        return result;
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`Create Event Repository error - ${error}`);
+    }
+}
+
+export const getTicketDetailsByIdRepository = async (id: string) => {
+    try {
+        const result = await TicketSchema.findById(id).populate("eventId").populate("paymentId");
+        return result;
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`Create Event Repository error - ${error}`);
+    }
+}

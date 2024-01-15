@@ -9,3 +9,8 @@ export interface PaymentDto {
     time: string;
     date: string;
 }
+
+export interface updatePaymentDto {
+    paymentId: string;
+    ticketId: string;
+}
