@@ -9,3 +9,16 @@ export interface TicketDto {
     location: string;
     paymentId: string;
 }
+
+export interface PdfTicketDto {
+    eventImage: string;
+    paymentRef: string;
+    location: string;
+    eventName: string;
+    quantity: number;
+    date: string;
+    time: string;
+    ticketPrice: string;
+    ticketId: string;
+    amount: number
+}
