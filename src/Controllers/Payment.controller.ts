@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { createPaymentService } from '../Services/Payment.service';
-import { PaymentDto } from '../Dtos/Payment.dto';
+import { createPaymentService, updatePaymentStatusService } from '../Services/Payment.service';
+import { PaymentDto, updatePaymentDto } from '../Dtos/Payment.dto';
 import { makeResponse } from '../Utils/response';
 import { getEventByIdService } from '../Services/Event.service';
 import logger from '../Logger';
 import { TicketDto } from '../Dtos/Ticket.dto';
 import { createTicketService } from '../Services/Ticket.service';
+import createError from "http-errors"
+
 
 // const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
 const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
@@ -52,19 +54,36 @@ export const createPaymentController = async (req: Request, res: Response) => {
                     }
                 }],
                 mode: 'payment',
-                success_url: `http://localhost:3000/tickets?pay=${payment._id}&ticket=${ticket._id}`,
+                success_url: `http://localhost:3000/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
                 cancel_url: `https://www.linkedin.com/`
             });
     
             if (session) {
-                console.log('session ', session);            
-                // return session?.url;
+                logger?.info("updatePaymentStatus Controller response - ", session);            
                 return makeResponse(res, 200, session?.url, 'Payment saved successfully');
+            }
+            else {
+                throw createError.BadRequest('Payment not created');
             }
         }
         
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
+    catch (error) {
+        createError.BadRequest("Payment creation failed");
+    }
+}
+
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+    try {
+        const ids: updatePaymentDto = req.body;
+        const result = await updatePaymentStatusService(ids);
+        if (!result) {
+            throw createError.BadRequest('Payment status not updated');
+        }
+        logger?.info("updatePaymentStatus Controller response - ", result);
+        return makeResponse(res, 201, result, 'Payment status updated successfully');
+    }
+    catch (error) {
+        createError.BadRequest("Payment Status update failed");
     }
 }

@@ -80,3 +80,27 @@ export const deleteEventRepository = async (id: string) => {
         throw new Error(`deleteEventRepository error - ${error}`);
     }
 }
+
+export const updateEventTicketQuantityRepository = async (id:string, ticketPriceId:string, newQuantity: number) => {
+    try {
+        const result = await EventSchema.findOneAndUpdate( {
+            _id: id,
+            'ticketPrice._id': ticketPriceId,
+          },
+          {
+            $set: {
+              'ticketPrice.$.ticketQuantity': newQuantity,
+            },
+          },
+          { new: true });
+          
+          if (!result) {
+              throw new Error('Event or ticket price not found');
+          }
+          return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`updateEventQuantity Repository error - ${error}`);
+    }
+}
