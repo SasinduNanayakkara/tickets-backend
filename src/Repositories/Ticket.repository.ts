@@ -27,7 +27,7 @@ export const updateTicketStatusRepository = async (ticketId: string, ticketStatu
 
 export const getTicketDetailsByIdRepository = async (id: string) => {
     try {
-        const result = await TicketSchema.findById(id).populate("eventId").populate("paymentId");
+        const result = await TicketSchema.findById(id).populate("eventId").populate("paymentId").populate("userId");
         return result;
     }
     catch(error) {

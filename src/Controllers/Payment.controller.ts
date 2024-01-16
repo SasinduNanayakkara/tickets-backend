@@ -11,7 +11,7 @@ import createError from "http-errors"
 
 
 // const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
-const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
+const stripe_key = process.env.STRIPE_SECRET_KEY as string;
 const stripeInstance = new Stripe(stripe_key, {
     apiVersion: '2023-10-16',
     typescript: true
@@ -20,8 +20,6 @@ const stripeInstance = new Stripe(stripe_key, {
 export const createPaymentController = async (req: Request, res: Response) => {
     try {
         const paymentReq:PaymentDto = req.body;
-        console.log(req.body);
-        console.log(process.env.STRIPE_SECRET_KEY);
         
         
         const eventDetails = await getEventByIdService(paymentReq.eventId);
