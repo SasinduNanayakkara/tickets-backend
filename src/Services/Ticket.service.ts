@@ -4,7 +4,8 @@ import { v4 as uuidV4 } from "uuid";
 import { ticketCreateRepository } from "../Repositories/Ticket.repository";
 import logger from "../Logger";
 import PDFDocument from "pdfkit";
-import fs from "fs"
+import { sendEmail } from './Notification.service';
+import digitalTicket from '../Utils/Templates/DigitalTicket';
 
 export const createTicketService = async (ticket:TicketDto) => {
     try {
@@ -36,13 +37,28 @@ export const updateTicketStatus = async (ticketId: string) => {
 
 export const getTicketDetailsByIdService = async (id: string) => {
     try {
-        const result = await getTicketDetailsByIdRepository(id);
-        if(!result) {
+        const result:any = await getTicketDetailsByIdRepository(id);
+        if (!result) {
             throw new Error('Ticket Data not found');
+        } else {
+            const dynamicValues = {
+                imageUrl: result?.eventId?.eventImage,
+                eventName: result?.eventId?.eventName,
+                location: result?.location,
+                date: result?.date,
+                time: result?.time,
+                ticketPrice: result?.ticketPrice,
+                ticketId: result?._id,
+                amount: result?.paymentId?.amount,
+                quantity: result?.quantity,
+                QRCode: `http://localhost:3000/tickets?pay=${result?.paymentId?._id}&ticket=${result?._id}&user=${result?.userId?._id}`
+            }
+            const template = digitalTicket(dynamicValues);
+            await sendEmail(result?.userId?.email, 'Digital Ticket', template);
         }
-        return result
+        return result;
     }
-    catch(error) {
+    catch (error) {
         logger.error(`Error: ${error}`);
         throw new Error(`GetTicketDataService error - ${error}`);
     }
