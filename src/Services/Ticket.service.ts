@@ -1,4 +1,4 @@
-import { getTicketDetailsByIdRepository, updateTicketStatusRepository } from './../Repositories/Ticket.repository';
+import { getTicketDetailsByIdRepository, getTicketDetailsByUserIdRepository, updateTicketStatusRepository } from './../Repositories/Ticket.repository';
 import { PdfTicketDto, TicketDto } from "../Dtos/Ticket.dto";
 import { v4 as uuidV4 } from "uuid";
 import { ticketCreateRepository } from "../Repositories/Ticket.repository";
@@ -99,4 +99,15 @@ export const createDigitalTicketService = async (ticketDetails: PdfTicketDto, da
 
 
     doc.end();
+}
+
+export const getTicketsByUserIdService = async (userId: string) => {
+    try {
+        const result = await getTicketDetailsByUserIdRepository(userId);
+        return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`GetTicketDataService error - ${error}`);
+    }
 }

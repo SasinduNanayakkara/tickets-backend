@@ -35,3 +35,15 @@ export const getTicketDetailsByIdRepository = async (id: string) => {
         throw new Error(`Create Event Repository error - ${error}`);
     }
 }
+
+export const getTicketDetailsByUserIdRepository = async (userId: string) => {
+    try {
+        const result = await TicketSchema.find({userId: userId, paymentStatus: "paid"}).populate("eventId").populate("paymentId").populate("userId");
+        console.log("ticket data - ", result);
+        return result;
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`Create Event Repository error - ${error}`);
+    }
+}
