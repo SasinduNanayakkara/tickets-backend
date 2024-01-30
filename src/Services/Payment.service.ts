@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { decreaseEventService, getEventByIdService } from './Event.service';
-import { PaymentDto, updatePaymentDto } from '../Dtos/Payment.dto';
-import { createPaymentRepository, updatePaymentStatus } from '../Repositories/Payment.repository';
+import { PaymentDto, registrationFeePaymentDto, updatePaymentDto } from '../Dtos/Payment.dto';
+import { createPaymentRepository, createRegistrationFeePaymentRepository, updatePaymentStatus } from '../Repositories/Payment.repository';
 import { v4 as uuidV4 } from "uuid";
 import logger from '../Logger';
 import { updateTicketStatus } from './Ticket.service';
@@ -44,5 +44,18 @@ export const updatePaymentStatusService = async (ids: updatePaymentDto) => {
     catch(error) {
         logger.error(`Error: ${error}`);
         throw new Error(`updatePaymentService error - ${error}`);
+    }
+}
+
+export const createRegistrationFeePaymentService = async (payment: registrationFeePaymentDto) => {
+    try {
+        payment.paymentRef = uuidV4();
+        payment.status = "pending";
+        const result = await createRegistrationFeePaymentRepository(payment);
+        return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`createRegistrationPaymentService error - ${error}`);
     }
 }

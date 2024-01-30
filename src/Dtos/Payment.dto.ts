@@ -14,3 +14,10 @@ export interface updatePaymentDto {
     paymentId: string;
     ticketId: string;
 }
+
+export interface registrationFeePaymentDto {
+    paymentRef: string;
+    userId: string;
+    amount: number;
+    status: string
+}
