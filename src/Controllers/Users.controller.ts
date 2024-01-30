@@ -22,6 +22,26 @@ export const createUser = async (req: Request, res: Response) => {
     }
 }
 
+export const createAdmin = async (req:Request, res:Response) => {
+    try {
+        const user: UsersDto = req.body;
+        user.userType = "Admin";
+        user.registrationFee = 'unPaid';
+        logger.info("Create Admin request - " + req.body);
+        const result = await createUserService(user);
+        if (result.status === 'success') {
+            return makeResponse(res, 201, result, 'User created successfully');
+        }
+        else {
+            return makeResponse(res, 400, result, 'User creation unsuccessful');
+        }
+    }
+    catch (error: any) {
+        logger.error("user creation failed.");
+        createError.BadRequest("user creation failed.")
+    }
+}
+
 export const getUserByUserId = async (req: Request, res: Response) => {
     try {
         const id = req.params.id
