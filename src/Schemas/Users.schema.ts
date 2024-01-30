@@ -37,6 +37,18 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
+    },
+    userType: {
+        type: String,
+        required: [true, "UserType is required"],
+        enum: ['Client', 'Admin'],
+        default: 'Client'
+    },
+    registrationFee: {
+        type:String,
+        required: true,
+        enum: ['none', 'unPaid', 'Paid'],
+        default: 'none'
     }
 
 }, { timestamps: true });
