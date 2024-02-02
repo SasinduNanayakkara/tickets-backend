@@ -8,6 +8,7 @@ export interface UsersDto {
     password: string;
     userType: string;
     registrationFee: string;
+    _id?: string;
 }
 
 export interface tokenDto {

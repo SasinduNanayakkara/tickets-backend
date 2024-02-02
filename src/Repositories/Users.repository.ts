@@ -1,3 +1,4 @@
+import { updateUserPaymentStatus } from './../Controllers/Users.controller';
 import { UsersDto, tokenDto } from "../Dtos/Users.dto";
 import logger from "../Logger";
 import TokenSchema from "../Schemas/Token.Schema";
@@ -50,6 +51,21 @@ export const getUserByIdRepository = async (id: string) => {
     }
     catch(err) {
         logger.error(err);
+        return {err, status: 'error'}
+    }
+}
+
+export const updateUserPaymentStatusRepository = async (id: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {registrationFee: 'Paid'});
+        console.log("repo result - ",result);
+        
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(`updateUserPaymentStatusRepository ${err}`);
         return {err, status: 'error'}
     }
 }

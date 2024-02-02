@@ -59,3 +59,13 @@ export const createRegistrationFeePaymentService = async (payment: registrationF
         throw new Error(`createRegistrationPaymentService error - ${error}`);
     }
 }
+
+export const updateRegistrationFeePaymentStatusService = async (id: string) => {
+    try {
+        
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`updatePaymentService error - ${error}`);
+    }
+}

@@ -19,5 +19,6 @@ export interface registrationFeePaymentDto {
     paymentRef: string;
     userId: string;
     amount: number;
-    status: string
+    status: string;
+    _id?: string;
 }

@@ -91,6 +91,7 @@ export const createRegistrationPaymentController = async (req: Request, res: Res
     try {
         const paymentDetails: registrationFeePaymentDto = req.body;
         const registrationPayment = await createRegistrationFeePaymentService(paymentDetails);
+        logger.info(`payment response - ${registrationPayment}`);
         if (registrationPayment) {
             const session = await stripeInstance.checkout.sessions.create({
                 line_items: [{
@@ -105,7 +106,7 @@ export const createRegistrationPaymentController = async (req: Request, res: Res
                     }
                 }],
                 mode: 'payment',
-                success_url: 'http://localhost:3000',
+                success_url: `http://localhost:3000?pay=${registrationPayment._id}`,
                 cancel_url: 'http://localhost:3000/register'
             });
             if (session) {
