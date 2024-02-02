@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UsersDto } from "../Dtos/Users.dto";
-import { createUserService, getUserByUserIdService } from "../Services/Users.service";
+import { createUserService, getUserByUserIdService, updateUserPaymentStatusService } from "../Services/Users.service";
 import {makeResponse} from '../Utils/response';
 import logger from "../Logger";
 import createError from "http-errors";
@@ -54,5 +54,22 @@ export const getUserByUserId = async (req: Request, res: Response) => {
     catch(err) {
         logger.error("User fetching unsuccessful");
         createError.BadRequest("User fetch failed");
+    }
+}
+
+export const updateUserPaymentStatus = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const result = await updateUserPaymentStatusService(id);
+        if (result) {
+            return makeResponse(res, 200, result, 'Payment status updated successfully');
+        }
+        else {
+            return makeResponse(res, 400, result, 'Payment status update unsuccessful');
+        }
+    }
+    catch (error: any) {
+        logger.error("Payment status update failed.");
+        createError.BadRequest("Payment status update failed.")
     }
 }

@@ -1,3 +1,4 @@
+import { updateUserPaymentStatus } from './../Controllers/Users.controller';
 import { PaymentDto, registrationFeePaymentDto } from "../Dtos/Payment.dto";
 import logger from "../Logger";
 import PaymentSchema from "../Schemas/Payment.schema";
@@ -48,3 +49,14 @@ export const createRegistrationFeePaymentRepository = async (payment: registrati
         throw new Error(`Create Payment Repository error - ${error}`);
     }
 }
+
+export const updateUserRegistrationFeeStatusRepository = async (id: string) => {
+    try {
+        const result = await RegistrationFeeSchema.findByIdAndUpdate(id, {status: 'success'});
+        return result;
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`Update PaymentStatus Repository error - ${error}`);
+    }
+} 

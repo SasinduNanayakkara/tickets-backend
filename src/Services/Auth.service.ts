@@ -51,14 +51,18 @@ export const generateAccessTokenService = async (userId = "", roles = [""], type
 export const loginService = async (email: string, password: string) => {
     try {
         const user = await loginRepository(email);
-        console.log("user - ", user);
+        logger.info("logged in user - ", user);
+        let role = 'client';
         
         if (user) {
             const decryptPassword = await bcrypt.compare(password, user.password);
             if (decryptPassword) {
                 console.log("ok ok");
-                const accessToken = await generateAccessTokenService(user._id.toString(), ['client'], ACCESS_TOKEN_TYPE);
-                const refreshToken = await generateAccessTokenService(user._id.toString(), ['client'], REFRESH_TOKEN_TYPE);
+                if (user.registrationFee === 'Paid') {
+                    role = 'admin';
+                }
+                const accessToken = await generateAccessTokenService(user._id.toString(), [role], ACCESS_TOKEN_TYPE);
+                const refreshToken = await generateAccessTokenService(user._id.toString(), [role], REFRESH_TOKEN_TYPE);
                 console.log("access refresh - ", accessToken, refreshToken);
                 
                 return {accessToken: accessToken, refreshToken: refreshToken}
