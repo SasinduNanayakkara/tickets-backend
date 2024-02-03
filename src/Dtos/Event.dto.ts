@@ -13,4 +13,5 @@ export interface TicketPrice {
     ticketName: string;
     ticketPrice: number;
     ticketQuantity: number;
+    totalTicketQuantity: number;
 }

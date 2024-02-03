@@ -33,6 +33,7 @@ const eventSchema = new mongoose.Schema({
                 ticketName: {type: String},
                 ticketPrice: {type: Number},
                 ticketQuantity: {type: Number},
+                totalTicketQuantity: {type: Number}
             }
     ],
     eventImage: [
