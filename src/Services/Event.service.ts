@@ -1,4 +1,4 @@
-import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsRepository, updateEventRepository, updateEventTicketQuantityRepository } from "../Repositories/Event.repository";
+import { createEventRepository, deleteEventRepository, getEventByEventNameRepository, getEventByEventTypeRepository, getEventByIdRepository, getEventsByAdminIdRepository, getEventsRepository, updateEventRepository, updateEventTicketQuantityRepository } from "../Repositories/Event.repository";
 import { EventDto } from "../Dtos/Event.dto";
 import { validateEventDate } from "../Utils/validation";
 import logger from "../Logger";
@@ -18,7 +18,7 @@ export const getEventsService = async () => {
     try {
         const result = await getEventsRepository();
         if (result) {
-            const validEvents = validateEventDate(result as EventDto[]);
+            const validEvents = validateEventDate(result as unknown as EventDto[]);
             const musicalEvents = validEvents.filter((event) => event.eventType === 'Musical');
             let filteredEvents: EventDto[] = [];
             if (validEvents.some((event) => event.eventType === 'Drama' || event.eventType === 'Exhibition')) {
@@ -57,7 +57,7 @@ export const getEventByEventNameService = async (eventName: string) => {
     try {
         const result = await getEventByEventNameRepository(eventName);
         if (result) {
-            const validEvents = validateEventDate(result as EventDto[]);
+            const validEvents = validateEventDate(result as unknown as EventDto[]);
             return validEvents;
         }
         else {
@@ -74,7 +74,7 @@ export const getEventByEventTypeService = async (eventType: string) => {
     try {
         const result = await getEventByEventTypeRepository(eventType);
         if (result) {
-            const validEvents = validateEventDate(result as EventDto[]);
+            const validEvents = validateEventDate(result as unknown as EventDto[]);
             return validEvents;
         }
         else {
@@ -142,5 +142,16 @@ export const decreaseEventService = async (eventId: string, eventTicketPrice: nu
     catch (error) {
         logger.error(`Error: ${error}`);
         throw new Error(`decreaseEventService error - ${error}`);
+    }
+}
+
+export const getEventsByAdminIdService = async (adminId: string) => {
+    try {
+        const result = await getEventsByAdminIdRepository(adminId);
+        return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventsByAdminIdService error - ${error}`);
     }
 }

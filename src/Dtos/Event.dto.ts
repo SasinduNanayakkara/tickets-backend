@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export interface EventDto {
     eventName: string;
     eventDate: Date[];
@@ -7,6 +9,7 @@ export interface EventDto {
     ticketPrice: TicketPrice[];
     eventImage: string[];
     category: string;
+    adminId: string | ObjectId;
 }
 
 export interface TicketPrice {
