@@ -46,6 +46,11 @@ const eventSchema = new mongoose.Schema({
         type: String,
         enum: ["Concert", "Festival", "Show", "Other"],
         // required: [true, "Category is required"],
+    },
+    adminId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Admin Id is required"],
     }
 }, { timestamps: true });
 

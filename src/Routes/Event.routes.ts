@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createEventController, deleteEventController, getEventByEventNameController, getEventByEventTypeController, getEventByIdController, getEventsController, updateEventController } from "../Controllers/Event.Controller";
+import { createEventController, deleteEventController, getEventByAdminIdController, getEventByEventNameController, getEventByEventTypeController, getEventByIdController, getEventsController, updateEventController } from "../Controllers/Event.Controller";
 import { verifyAccessToken } from "../Utils/jwt";
 
 const router = Router();
@@ -11,6 +11,7 @@ router.get('/eventName/:eventName', verifyAccessToken, getEventByEventNameContro
 router.get('/eventType/:eventType', verifyAccessToken, getEventByEventTypeController);
 router.put('/:id', verifyAccessToken, updateEventController);
 router.delete('/:id', verifyAccessToken, deleteEventController);
+router.get('/admin/:id', verifyAccessToken, getEventByAdminIdController);
 
 
 export default router;

@@ -104,3 +104,14 @@ export const updateEventTicketQuantityRepository = async (id:string, ticketPrice
         throw new Error(`updateEventQuantity Repository error - ${error}`);
     }
 }
+
+export const getEventsByAdminIdRepository = async (adminId: string) => {
+    try {
+        const result = await EventSchema.find({ adminId: adminId });
+        return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getEventsByAdminIdRepository error - ${error}`);
+    }
+}
