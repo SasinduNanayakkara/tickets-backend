@@ -21,7 +21,7 @@ export const updateTicketStatusRepository = async (ticketId: string, ticketStatu
     }
     catch(error) {
         logger.error(`Error: ${error}`);
-        throw new Error(`Create Event Repository error - ${error}`);
+        throw new Error(`Update ticket status Repository error - ${error}`);
     }
 }
 
@@ -32,7 +32,7 @@ export const getTicketDetailsByIdRepository = async (id: string) => {
     }
     catch(error) {
         logger.error(`Error: ${error}`);
-        throw new Error(`Create Event Repository error - ${error}`);
+        throw new Error(`get ticket details Repository error - ${error}`);
     }
 }
 
@@ -44,6 +44,17 @@ export const getTicketDetailsByUserIdRepository = async (userId: string) => {
     }
     catch(error) {
         logger.error(`Error: ${error}`);
-        throw new Error(`Create Event Repository error - ${error}`);
+        throw new Error(`get ticket by userId Repository error - ${error}`);
+    }
+}
+
+export const getTicketsByEventIdRepository = async (eventId: string) => {
+    try {
+        const result = await TicketSchema.find({eventId: eventId}).populate("eventId").populate("userId").populate("paymentId");
+        return result;
+    }
+    catch(error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`get ticket eventId Repository error - ${error}`);
     }
 }

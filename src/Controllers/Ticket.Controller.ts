@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import createHttpError from "http-errors";
 import { PdfTicketDto, TicketDto } from "../Dtos/Ticket.dto";
-import { createDigitalTicketService, createTicketService, getTicketDetailsByIdService, getTicketsByUserIdService } from "../Services/Ticket.service";
+import { createDigitalTicketService, createTicketService, getTicketDetailsByIdService, getTicketsByEventIdService, getTicketsByUserIdService } from "../Services/Ticket.service";
 import logger from "../Logger";
 import { makeResponse } from "../Utils/response";
 import QR from "qr-image"
@@ -49,6 +49,22 @@ export const getTicketsByUserIdController = async (req:Request, res:Response) =>
     try {
         const userId = req.params.id;
         const result = await getTicketsByUserIdService(userId);
+        if(!result) {
+            logger.error("Ticket Data not found");
+            throw createHttpError.BadRequest("Ticket Data not found");
+        }
+        logger?.info("GetTicketDetails Controller response - ", result);
+        return makeResponse(res, 200, result, 'Ticket data retrieved successfully');
+    }
+    catch(error) {
+        createHttpError.BadRequest("Ticket Details retrieving failed");
+    }
+}
+
+export const getTicketsDetailsByEventId = async (req:Request, res:Response) => {
+    try {
+        const eventId = req.params.id;
+        const result = await getTicketsByEventIdService(eventId);
         if(!result) {
             logger.error("Ticket Data not found");
             throw createHttpError.BadRequest("Ticket Data not found");

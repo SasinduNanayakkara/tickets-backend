@@ -1,4 +1,4 @@
-import { getTicketDetailsByIdRepository, getTicketDetailsByUserIdRepository, updateTicketStatusRepository } from './../Repositories/Ticket.repository';
+import { getTicketDetailsByIdRepository, getTicketDetailsByUserIdRepository, getTicketsByEventIdRepository, updateTicketStatusRepository } from './../Repositories/Ticket.repository';
 import { PdfTicketDto, TicketDto } from "../Dtos/Ticket.dto";
 import { v4 as uuidV4 } from "uuid";
 import { ticketCreateRepository } from "../Repositories/Ticket.repository";
@@ -109,5 +109,16 @@ export const getTicketsByUserIdService = async (userId: string) => {
     catch (error) {
         logger.error(`Error: ${error}`);
         throw new Error(`GetTicketDataService error - ${error}`);
+    }
+}
+
+export const getTicketsByEventIdService = async (eventId: string) => {
+    try {
+        const result = await getTicketsByEventIdRepository(eventId);
+        return result;
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        throw new Error(`getTicketsByEventIdService error - ${error}`);
     }
 }
