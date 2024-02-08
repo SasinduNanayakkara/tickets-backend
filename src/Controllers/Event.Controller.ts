@@ -97,7 +97,7 @@ export const deleteEventController = async (req: Request, res: Response) => {
 
 export const getEventByAdminIdController = async (req: Request, res: Response) => {
     try {
-        const adminId = req.params.adminId;
+        const adminId = req.params.id;
         const result = await getEventsByAdminIdService(adminId);
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
