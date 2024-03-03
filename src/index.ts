@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(morganMiddleware)
 
 connectDB();
-client.connect();
+// client.connect();
 
 app.get('/', (req: Request, res: Response) => {
     res.send(`Tickets service is up and running... IP - ${req.ip}`);
