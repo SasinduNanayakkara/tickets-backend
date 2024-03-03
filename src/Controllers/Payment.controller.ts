@@ -1,41 +1,125 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { createPaymentService, getTicketPricesService } from '../Services/Payment.service';
-import { PaymentDto } from '../Dtos/Payment.dto';
+import { createPaymentService, createRegistrationFeePaymentService, updatePaymentStatusService } from '../Services/Payment.service';
+import { PaymentDto, registrationFeePaymentDto, updatePaymentDto } from '../Dtos/Payment.dto';
 import { makeResponse } from '../Utils/response';
+import { getEventByIdService } from '../Services/Event.service';
+import logger from '../Logger';
+import { TicketDto } from '../Dtos/Ticket.dto';
+import { createTicketService } from '../Services/Ticket.service';
+import createError from "http-errors"
+import { ADMIN_REGISTRATION_FEE } from '../Utils/Constants';
 
-const stripe = new Stripe(process.env.STRIPE_KEY as string, {
+
+// const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
+const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
+const stripeInstance = new Stripe(stripe_key, {
     apiVersion: '2023-10-16',
     typescript: true
 });
 
-export const createPayment = async (req: Request, res: Response) => {
+export const createPaymentController = async (req: Request, res: Response) => {
     try {
-        const {eventId,ticketPriceId, quantity, userId} = req.body;
+        const paymentReq:PaymentDto = req.body;
         
-        const ticketDetails = await getTicketPricesService(eventId,ticketPriceId, quantity); 
-        const session = await stripe.checkout.sessions.create({
-            mode: "payment",
-            success_url: `${process.env.CLIENT_URL}?success=true`,
-            cancel_url: `${process.env.CLIENT_URL}?success=false`,
-            line_items: [ticketDetails],
-            payment_method_types: ["card"]
-        });
-        if (session) {
-            const newPayment: PaymentDto = {
-                paymentRef: session.id,
-                event: eventId,
-                user: userId,
-                amount: ticketDetails.price_data.unit_amount,
-                quantity: quantity
+        
+        const eventDetails = await getEventByIdService(paymentReq.eventId);
+        paymentReq.amount = paymentReq.ticketPrice * paymentReq.quantity;
+        const payment = await createPaymentService(paymentReq);
+        if(payment) {
+            let ticketReq: TicketDto = {
+                eventId: paymentReq.eventId,
+                ticketPrice: paymentReq.ticketPrice,
+                date: paymentReq.date,
+                time: paymentReq.time,
+                quantity: paymentReq.quantity,
+                userId: paymentReq.userId,
+                location: paymentReq.location,
+                ticketRef: '',
+                paymentId: payment?._id as any
             }
-            const result = await createPaymentService(newPayment, ticketPriceId);
-            return makeResponse(res, 201, result, 'Payment saved successfully');
+            const ticket = await createTicketService(ticketReq);
+            logger.info(`payment response - ${payment}`);
+            const session = await stripeInstance.checkout.sessions.create({  
+                line_items:[{
+                    quantity: paymentReq.quantity,
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: eventDetails?.eventName as string,
+                            description: eventDetails?.eventType as string,
+                        },
+                        unit_amount: paymentReq.ticketPrice * 100
+                    }
+                }],
+                mode: 'payment',
+                success_url: `http://localhost:3000/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
+                cancel_url: `http://localhost:3000/fail`
+            });
+    
+            if (session) {
+                logger?.info("updatePaymentStatus Controller response - ", session);            
+                return makeResponse(res, 200, session?.url, 'Payment saved successfully');
+            }
+            else {
+                throw createError.BadRequest('Payment not created');
+            }
         }
         
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        createError.BadRequest("Payment creation failed");
     }
 }
+
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+    try {
+        const ids: updatePaymentDto = req.body;
+        const result = await updatePaymentStatusService(ids);
+        if (!result) {
+            throw createError.BadRequest('Payment status not updated');
+        }
+        logger?.info("updatePaymentStatus Controller response - ", result);
+        return makeResponse(res, 201, result, 'Payment status updated successfully');
+    }
+    catch (error) {
+        createError.BadRequest("Payment Status update failed");
+    }
+}
+
+export const createRegistrationPaymentController = async (req: Request, res: Response) => {
+    try {
+        const paymentDetails: registrationFeePaymentDto = req.body;
+        const registrationPayment = await createRegistrationFeePaymentService(paymentDetails);
+        logger.info(`payment response - ${registrationPayment}`);
+        if (registrationPayment) {
+            const session = await stripeInstance.checkout.sessions.create({
+                line_items: [{
+                    quantity: 1,
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: 'GRAB YOUR TICKETS ADMIN Registration',
+                            description: 'Grab Your Tickets Admin Registration Fee'
+                        },
+                        unit_amount: ADMIN_REGISTRATION_FEE
+                    }
+                }],
+                mode: 'payment',
+                success_url: `http://localhost:3000?pay=${registrationPayment._id}`,
+                cancel_url: 'http://localhost:3000/register'
+            });
+            if (session) {
+                logger?.info("updatePaymentStatus Controller response - ", session);            
+                return makeResponse(res, 200, session?.url, 'Payment saved successfully');
+            }
+            else {
+                throw createError.BadRequest('Payment not created');
+            }
+        }
+    }
+    catch (error) {
+        createError.BadRequest("Payment creation failed");
+    }
+}
+

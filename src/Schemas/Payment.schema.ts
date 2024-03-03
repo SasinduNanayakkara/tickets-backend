@@ -6,12 +6,12 @@ const paymentSchema = new mongoose.Schema({
          required: [true, "Ticket reference is required"],
          trim: true
    },
-   event: {
+   eventId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Event",
     required: [true, "Event is required"],
    },
-   user: {
+   userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: [true, "User is required"]
@@ -23,6 +23,12 @@ const paymentSchema = new mongoose.Schema({
    quantity: {
       type: Number,
       required: [true, "Quantity is required"]
+   },
+   status: {
+      type: String,
+      required: true,
+      enum: ['pending', 'success'],
+      default: 'pending'
    }
 },{ timestamps: true });
 

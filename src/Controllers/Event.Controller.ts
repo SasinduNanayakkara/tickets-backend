@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors"
-import { createEventService, deleteEventService, getEventByEventNameService, getEventByEventTypeService, getEventByIdService, getEventsService, updateEventService } from "../Services/Event.service";
+import { createEventService, deleteEventService, getEventByEventNameService, getEventByEventTypeService, getEventByIdService, getEventsByAdminIdService, getEventsService, updateEventService } from "../Services/Event.service";
 import { EventDto } from "../Dtos/Event.dto";
 import { makeResponse } from "../Utils/response";
 import logger from "../Logger";
@@ -17,7 +17,7 @@ export const createEventController = async (req: Request, res: Response, next: N
         return makeResponse(res, 201, result, 'User created successfully');
     }
     catch (error) {
-        next(error);
+        createError.BadRequest("Event creation failed");
     }
 }
 
@@ -27,9 +27,9 @@ export const getEventsController = async (req: Request, res: Response) => {
         logger.info("Events data retrieving =======");
         return makeResponse(res, 200, result, 'Events retrieved successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -39,9 +39,9 @@ export const getEventByIdController = async (req: Request, res: Response) => {
         const result = await getEventByIdService(id);
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -51,9 +51,9 @@ export const getEventByEventNameController = async (req: Request, res: Response)
         const result = await getEventByEventNameService(eventName);
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -63,9 +63,9 @@ export const getEventByEventTypeController = async (req: Request, res: Response)
         const result = await getEventByEventTypeService(eventType);
         return makeResponse(res, 200, result, 'Event retrieved successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }
 
@@ -76,9 +76,9 @@ export const updateEventController = async (req: Request, res: Response) => {
         const result = await updateEventService(id, event);
         return makeResponse(res, 200, result, 'Event updated successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event updating failed");
     }
 }
 
@@ -88,8 +88,21 @@ export const deleteEventController = async (req: Request, res: Response) => {
         const result = await deleteEventService(id);
         return makeResponse(res, 200, result, 'Event deleted successfully');
     }
-    catch (error: any) {
-        console.error(`Error: ${error}`);
-        process.exit(1);
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event deleting failed");
+
+    }
+}
+
+export const getEventByAdminIdController = async (req: Request, res: Response) => {
+    try {
+        const adminId = req.params.id;
+        const result = await getEventsByAdminIdService(adminId);
+        return makeResponse(res, 200, result, 'Event retrieved successfully');
+    }
+    catch (error) {
+        logger.error(`Error: ${error}`);
+        createError.BadRequest("Event retrieving failed");
     }
 }

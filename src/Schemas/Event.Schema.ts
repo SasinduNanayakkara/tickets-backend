@@ -33,6 +33,7 @@ const eventSchema = new mongoose.Schema({
                 ticketName: {type: String},
                 ticketPrice: {type: Number},
                 ticketQuantity: {type: Number},
+                totalTicketQuantity: {type: Number}
             }
     ],
     eventImage: [
@@ -45,6 +46,11 @@ const eventSchema = new mongoose.Schema({
         type: String,
         enum: ["Concert", "Festival", "Show", "Other"],
         // required: [true, "Category is required"],
+    },
+    adminId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Admin Id is required"],
     }
 }, { timestamps: true });
 

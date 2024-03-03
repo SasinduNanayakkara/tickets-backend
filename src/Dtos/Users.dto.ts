@@ -5,7 +5,10 @@ export interface UsersDto {
     phone: string;
     NIC: string;
     address: string;
-    password: string
+    password: string;
+    userType: string;
+    registrationFee: string;
+    _id?: string;
 }
 
 export interface tokenDto {
