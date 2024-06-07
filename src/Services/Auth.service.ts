@@ -1,12 +1,16 @@
+import { resetPassword } from './../Controllers/Auth.controller';
 import { tokenDto } from './../Dtos/Users.dto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import createError from "http-errors";
 import { v4 as uuidv4 } from 'uuid'; 
-import { ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE } from '../Utils/Constants';
+import { ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE, SALT_ROUNDS } from '../Utils/Constants';
 // import { client } from '../Database/redisDB';
 import logger from '../Logger';
-import { loginRepository, tokenSaveRepository } from '../Repositories/Users.repository';
+import { getUserByIdRepository, loginRepository, tokenSaveRepository, updatePassword, updateUserOtp } from '../Repositories/Users.repository';
+import { generateOTP } from '../Utils/validation';
+import forgotPasswordTemplate from '../Utils/Templates/ForgotPassword';
+import { sendEmail } from './Notification.service';
 
 export const generateAccessTokenService = async (userId = "", roles = [""], type: number) => {
     const secret = type === ACCESS_TOKEN_TYPE ? process.env.ACCESS_TOKEN_SECRET! : process.env.REFRESH_TOKEN_SECRET!;
@@ -81,5 +85,61 @@ export const loginService = async (email: string, password: string) => {
     catch(err) {
         logger.error(err);
         throw new Error(`login service error - ${err}`);
+    }
+}
+
+export const sendForgetPasswordEmail = async (id: string) => {
+    try {
+        const user = await getUserByIdRepository(id);
+        const otp = generateOTP();
+        const result = await updateUserOtp(id, otp);
+        if (!result) {
+            throw new Error('OTP not updated');
+        }
+        const template = forgotPasswordTemplate(otp);
+        await sendEmail(user?.result?.email as string, 'Your One-Time Password (OTP) is Here', template);
+        return {status: 'success'};
+    }
+    catch(err) {
+        logger.error(err);
+        return {status: 'error'};
+    }
+}
+
+export const validateOtpService = async (id: string, otp: string) => {
+    try {
+        const user = await getUserByIdRepository(id);
+        if (user) {
+            if (user?.result?.otp === otp) {
+                return {status: 'success'};
+            }
+            else {
+                return {status: 'error'};
+            }
+        }
+        else {
+            return {status: 'error'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        return {status: 'error'};
+    }
+}
+
+export const resetPasswordService = async (id: string, password: string) => {
+    try {
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        const result = await updatePassword(id, hashedPassword);
+        if (result) {
+            return {status: 'success'};
+        }
+        else {
+            return {status: 'error'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        return {status: 'error'};
     }
 }

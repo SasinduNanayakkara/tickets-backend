@@ -69,3 +69,42 @@ export const updateUserPaymentStatusRepository = async (id: string) => {
         return {err, status: 'error'}
     }
 }
+
+export const updatePasswordRepository = async (id: string, password: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {password: password});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        return {err, status: 'error'}
+    }
+}
+
+export const updateUserOtp = async (id: string, otp: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {otp: otp});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        return {err, status: 'error'}
+    }
+}
+
+export const updatePassword = async (id: string, password: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {password: password});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        return {err, status: 'error'}
+    }
+}
