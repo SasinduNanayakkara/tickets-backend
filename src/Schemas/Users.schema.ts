@@ -25,13 +25,13 @@ const UserSchema = new mongoose.Schema({
     },
     NIC: {
         type: String,
-        required: [true, "NIC is required"],
+        required: [false, "NIC is required"],
         unique: true,
         trim: true
     },
     address: {
         type: String,
-        required: [true, "Address is required"],
+        required: [false, "Address is required"],
         trim: true
     },
     password: {
@@ -49,6 +49,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         enum: ['none', 'unPaid', 'Paid'],
         default: 'none'
+    },
+    otp: {
+        type: String,
+        required: false
     }
 
 }, { timestamps: true });

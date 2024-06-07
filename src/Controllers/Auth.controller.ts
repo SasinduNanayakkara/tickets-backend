@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
-import { generateAccessTokenService, loginService } from "../Services/Auth.service";
+import { generateAccessTokenService, loginService, resetPasswordService, sendForgetPasswordEmail, validateOtpService } from "../Services/Auth.service";
 import logger from "../Logger";
 import { makeResponse } from "../Utils/response";
 import { ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE } from "../Utils/Constants";
@@ -58,6 +58,50 @@ export const login = async (req: Request, res: Response) => {
     catch(err) {
         logger.error(err);
         createError.BadRequest("User login failed");
+    }
+}
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const id = req.body.id;
+        const result = await sendForgetPasswordEmail(id);
+        if (!result) {
+            throw createError.BadRequest("Forget password email sending failed");
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Forget password email sending failed");
+    }
+}
+
+export const validateOtp = async (req: Request, res: Response) => {
+    try {
+        const {id, otp} = req.body;
+        logger.info("Auth controller request - " + req.body);
+        const result = await validateOtpService(id, otp);
+        makeResponse(res, 200, result, "OTP validated successfully");
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("OTP validation failed");
+    }
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const {id, password} = req.body;
+        logger.info("Auth controller request - " + req.body);
+        const result = await resetPasswordService(id, password);
+        if (!result) {
+            throw createError.BadRequest("Password reset failed");
+        }
+        logger.info("Password reset successfully" + result);
+        makeResponse(res, 200, result, "Password reset successfully");
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Password reset failed");
     }
 }
 
