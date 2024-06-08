@@ -63,11 +63,12 @@ export const login = async (req: Request, res: Response) => {
 
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
-        const id = req.body.id;
-        const result = await sendForgetPasswordEmail(id);
+        const email = req.body.email;        
+        const result = await sendForgetPasswordEmail(email);
         if (!result) {
             throw createError.BadRequest("Forget password email sending failed");
         }
+        return makeResponse(res, 200, result, "Forget password email sent successfully");
     }
     catch(err) {
         logger.error(err);
@@ -77,9 +78,14 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 export const validateOtp = async (req: Request, res: Response) => {
     try {
-        const {id, otp} = req.body;
-        logger.info("Auth controller request - " + req.body);
-        const result = await validateOtpService(id, otp);
+        const {otp, email} = req.body;
+        logger.info("Auth controller request - " +"email - " +  email + " otp - " +  otp);
+        const result = await validateOtpService(email, otp);
+        console.log("otp validation result - ", result);
+        
+        if (!result) {
+            throw createError.BadRequest("OTP validation failed");
+        }
         makeResponse(res, 200, result, "OTP validated successfully");
     }
     catch(err) {
@@ -90,9 +96,9 @@ export const validateOtp = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
     try {
-        const {id, password} = req.body;
+        const {email, password} = req.body;
         logger.info("Auth controller request - " + req.body);
-        const result = await resetPasswordService(id, password);
+        const result = await resetPasswordService(email, password);
         if (!result) {
             throw createError.BadRequest("Password reset failed");
         }
@@ -104,4 +110,3 @@ export const resetPassword = async (req: Request, res: Response) => {
         createError.BadRequest("Password reset failed");
     }
 }
-
