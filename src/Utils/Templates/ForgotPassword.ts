@@ -58,12 +58,12 @@ const forgotPasswordTemplate = (otp: string) =>
 <body>
     <div class="container">
         <div class="header">
-            <img src="your-logo-url.png" alt="Your Company Logo">
+            <h1>GRAB YOUR TICKETS</h1>
         </div>
         <div class="content">
             <h1>Your OTP Code</h1>
             <p>Use the following OTP to complete your login process. This OTP is valid for the next 10 minutes.</p>
-            <div class="otp">{{OTP_CODE}}</div>
+            <div class="otp">${otp}</div>
             <p>If you did not request this, please ignore this email.</p>
         </div>
         <div class="footer">
