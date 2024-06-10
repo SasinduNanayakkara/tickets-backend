@@ -7,12 +7,24 @@ import { errorHandler } from './Utils/response';
 import morganMiddleware from './Logger/MorganMiddleware';
 import { client } from './Database/redisDB';
 import { limiter } from './Utils/RateLimit';
+import passport from 'passport';
+import session from 'express-session';
+require("./Utils/GoogleOAuth");
 
 const app = express();
 app.use(cors());
 dotenv.config();
 app.use(express.json());
-app.use(morganMiddleware)
+app.use(morganMiddleware);
+
+app.use(session({
+    secret: 'your-session-secret',
+    resave: false,
+    saveUninitialized: true,
+  }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 connectDB();
 // client.connect();

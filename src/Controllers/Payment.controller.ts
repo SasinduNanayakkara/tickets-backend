@@ -53,8 +53,8 @@ export const createPaymentController = async (req: Request, res: Response) => {
                     }
                 }],
                 mode: 'payment',
-                success_url: `http://localhost:3000/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
-                cancel_url: `http://localhost:3000/fail`
+                success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
+                cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/fail`
             });
     
             if (session) {
@@ -106,8 +106,8 @@ export const createRegistrationPaymentController = async (req: Request, res: Res
                     }
                 }],
                 mode: 'payment',
-                success_url: `http://localhost:3000?pay=${registrationPayment._id}`,
-                cancel_url: 'http://localhost:3000/register'
+                success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?pay=${registrationPayment._id}`,
+                cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/register`
             });
             if (session) {
                 logger?.info("updatePaymentStatus Controller response - ", session);            
