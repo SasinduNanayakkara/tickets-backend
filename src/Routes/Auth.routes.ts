@@ -13,8 +13,8 @@ router.post("/validate-otp", validateOtp);
 router.post("/reset-password", resetPassword);
 router.get("/google", passport.authenticate('google', {scope: ['email', 'profile']}));
 router.get("/google/callback", passport.authenticate('google', {
-    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?google=true`,
-    successRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?failed=true`
+    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?failed=true`,
+    successRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?google=true`
 }));
 
 export default router;

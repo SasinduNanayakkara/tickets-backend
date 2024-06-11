@@ -12,7 +12,7 @@ import { ADMIN_REGISTRATION_FEE } from '../Utils/Constants';
 
 
 // const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
-const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
+const stripe_key = process.env.STRIPE_SECRET_KEY || "";
 const stripeInstance = new Stripe(stripe_key, {
     apiVersion: '2023-10-16',
     typescript: true

@@ -7,7 +7,7 @@ import { ACCESS_TOKEN_TYPE } from "./Constants";
 passport.use(new googleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID || "302775610241-ievu5h4vhq3pre7il36hl50tal4ukege.apps.googleusercontent.com",
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
-        callbackURL: `http://localhost:5000/api/v1/auth/google/callback`,
+        callbackURL: `${process.env.BACKEND_URL || "http://localhost:500"}/api/v1/auth/google/callback`,
         passReqToCallback: true
     },
     async function(request, accessToken, refreshToken, profile:any, done) {
