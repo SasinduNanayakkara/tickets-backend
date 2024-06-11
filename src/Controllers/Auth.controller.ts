@@ -5,6 +5,7 @@ import logger from "../Logger";
 import { makeResponse } from "../Utils/response";
 import { ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE } from "../Utils/Constants";
 import { verifyRefreshToken } from "../Utils/jwt";
+import passport from 'passport';
 
 
 export const generateAccessToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -110,3 +111,27 @@ export const resetPassword = async (req: Request, res: Response) => {
         createError.BadRequest("Password reset failed");
     }
 }
+
+export const googleAuthenticationController = async (req: Request, res: Response) => {
+    try {
+        const authenticate = passport.authenticate('google', {scope: ['email', 'profile']});
+        console.log("authenticate - ", authenticate);
+        
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Google authentication failed");
+    }
+}
+
+export const googleAuthenticationCallback = async (req: Request, res: Response) => {
+    try {
+        console.log("google auth callback - ");
+        
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Google authentication failed");
+    }
+}
+

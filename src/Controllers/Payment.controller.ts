@@ -12,7 +12,7 @@ import { ADMIN_REGISTRATION_FEE } from '../Utils/Constants';
 
 
 // const stripe_key = `Authorization: Bearer ${process.env.STRIPE_SECRET_KEY}`;
-const stripe_key = 'sk_test_51OGiiMKCoVUfCUs0OL4Sb097xyyTLbPIbxnruFcMI3zT9afuplF1NR8Ap2SmSrUQf63AlS28YXkZ7CnoH0mv1fEN00LbbQ90fp';
+const stripe_key = process.env.STRIPE_SECRET_KEY || "";
 const stripeInstance = new Stripe(stripe_key, {
     apiVersion: '2023-10-16',
     typescript: true
@@ -53,8 +53,8 @@ export const createPaymentController = async (req: Request, res: Response) => {
                     }
                 }],
                 mode: 'payment',
-                success_url: `http://localhost:3000/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
-                cancel_url: `http://localhost:3000/fail`
+                success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/tickets?pay=${payment._id}&ticket=${ticket._id}&user=${paymentReq.userId}`,
+                cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/fail`
             });
     
             if (session) {
@@ -106,8 +106,8 @@ export const createRegistrationPaymentController = async (req: Request, res: Res
                     }
                 }],
                 mode: 'payment',
-                success_url: `http://localhost:3000?pay=${registrationPayment._id}`,
-                cancel_url: 'http://localhost:3000/register'
+                success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?pay=${registrationPayment._id}`,
+                cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/register`
             });
             if (session) {
                 logger?.info("updatePaymentStatus Controller response - ", session);            

@@ -52,7 +52,6 @@ export const updateUserPaymentStatusService = async (id: string) => {
             const result: updatePaymentStateRepoType| any = await updateUserPaymentStatusRepository(registrationFeeResult.userId);
             logger.info(`updateUserPaymentStatusService result - ${result?.result._id}`);
             if (result) {
-                    console.log("okokokokoko");      
                     const template = thankYouTemplate(result?.result.firstName, result?.result.lastName);
                     await sendEmail(result?.result.email, 'Thank you for registering', template);          
             }
