@@ -12,7 +12,7 @@ export const createUserRepository = async (user: UsersDto) => {
     }
     catch (error: any) {
         logger.error(`Error: ${error}`);
-        return {error, status: 'error'};
+        throw new Error(`User not saved - ${error}`);
     }
 }
 
@@ -38,7 +38,7 @@ export const tokenSaveRepository = async (tokenData: tokenDto) => {
     }
     catch(err) {
         logger.error(err);
-        return {err, status: 'error'}
+        throw new Error("Token not saved");
     }
 }
 
@@ -51,7 +51,7 @@ export const getUserByIdRepository = async (id: string) => {
     }
     catch(err) {
         logger.error(err);
-        return {err, status: 'error'}
+        throw new Error("User not found");
     }
 }
 
@@ -66,6 +66,60 @@ export const updateUserPaymentStatusRepository = async (id: string) => {
     }
     catch(err) {
         logger.error(`updateUserPaymentStatusRepository ${err}`);
-        return {err, status: 'error'}
+        throw new Error("Payment status not updated");
+    }
+}
+
+export const updatePasswordRepository = async (id: string, password: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {password: password});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        throw new Error("Password not updated");
+    }
+}
+
+export const updateUserOtp = async (id: string | any, otp: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {otp: otp});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        throw new Error("OTP not updated");
+    }
+}
+
+export const updatePassword = async (id: string | any, password: string) => {
+    try {
+        const result = await UsersSchema.findByIdAndUpdate(id, {password: password});
+        if (result) {
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        throw new Error("Password not updated");
+    }
+}
+
+export const findUserByEmailRepository = async (email: string) => {
+    try {
+        const result = await UsersSchema.findOne({email: email});
+        console.log("email result - ", result);
+        if (result) {
+            
+            return {result, status: 'success'};
+        }
+    }
+    catch(err) {
+        logger.error(err);
+        throw new Error("User not found");
     }
 }

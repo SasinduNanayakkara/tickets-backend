@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
-import { generateAccessTokenService, loginService } from "../Services/Auth.service";
+import { generateAccessTokenService, loginService, resetPasswordService, sendForgetPasswordEmail, validateOtpService } from "../Services/Auth.service";
 import logger from "../Logger";
 import { makeResponse } from "../Utils/response";
 import { ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE } from "../Utils/Constants";
 import { verifyRefreshToken } from "../Utils/jwt";
+import passport from 'passport';
 
 
 export const generateAccessToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,6 +59,79 @@ export const login = async (req: Request, res: Response) => {
     catch(err) {
         logger.error(err);
         createError.BadRequest("User login failed");
+    }
+}
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const email = req.body.email;        
+        const result = await sendForgetPasswordEmail(email);
+        if (!result) {
+            throw createError.BadRequest("Forget password email sending failed");
+        }
+        return makeResponse(res, 200, result, "Forget password email sent successfully");
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Forget password email sending failed");
+    }
+}
+
+export const validateOtp = async (req: Request, res: Response) => {
+    try {
+        const {otp, email} = req.body;
+        logger.info("Auth controller request - " +"email - " +  email + " otp - " +  otp);
+        const result = await validateOtpService(email, otp);
+        console.log("otp validation result - ", result);
+        
+        if (!result) {
+            throw createError.BadRequest("OTP validation failed");
+        }
+        makeResponse(res, 200, result, "OTP validated successfully");
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("OTP validation failed");
+    }
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const {email, password} = req.body;
+        logger.info("Auth controller request - " + req.body);
+        const result = await resetPasswordService(email, password);
+        if (!result) {
+            throw createError.BadRequest("Password reset failed");
+        }
+        logger.info("Password reset successfully" + result);
+        makeResponse(res, 200, result, "Password reset successfully");
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Password reset failed");
+    }
+}
+
+export const googleAuthenticationController = async (req: Request, res: Response) => {
+    try {
+        const authenticate = passport.authenticate('google', {scope: ['email', 'profile']});
+        console.log("authenticate - ", authenticate);
+        
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Google authentication failed");
+    }
+}
+
+export const googleAuthenticationCallback = async (req: Request, res: Response) => {
+    try {
+        console.log("google auth callback - ");
+        
+    }
+    catch(err) {
+        logger.error(err);
+        createError.BadRequest("Google authentication failed");
     }
 }
 
